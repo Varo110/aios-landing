@@ -16,12 +16,13 @@
 <script>
 /* ── Configuración: lo único que hay que tocar ─────────────────────────────
    1. formUrl: la URL pública de tu formulario de CoreCRM (…/f/<id>).
-   2. campos: el name="…" de cada campo, tal como sale en «Copiar HTML» del formulario.
+   2. campos: el name="…" de cada campo, tal como sale en «Copiar HTML» del formulario. Los de abajo son los de la
+      plantilla «Formulario de contacto» de CoreCRM (nombre, email y mensaje): si la usas, no hay que tocarlos.
    3. video: el identificador del VSL en YouTube (lo que va después de v=), subido como oculto.
    4. banner: déjalo vacío si la primera tanda no tiene tope de plazas. */
 window.AIOS = {
   formUrl: '',
-  campos: { nombre: '', email: '', dedicacion: '' },
+  campos: { nombre: 'name', email: 'email', dedicacion: 'message' },
   video: '',
   banner: 'Lista de espera abierta · primera tanda con plazas limitadas',
 };
