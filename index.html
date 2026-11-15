@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI OS · Tu equipo de contenido en un agente</title>
+<meta name="description" content="Un agente de IA que trabaja en tu ordenador: ideas, guion, edición, publicación y respuesta por privado. Tú solo apruebas. Apúntate a la lista de espera.">
+<meta property="og:title" content="AI OS · Tu equipo de contenido en un agente">
+<meta property="og:description" content="De la idea al vídeo publicado y a la respuesta por privado. Tú solo apruebas.">
+<meta name="theme-color" content="#060B0B">
+<!-- Fuera de Google hasta que el formulario esté conectado: quitar esta línea entonces. -->
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+/* ── Configuración: lo único que hay que tocar ─────────────────────────────
+   1. formUrl: la URL pública de tu formulario de CoreCRM (…/f/<id>).
+   2. campos: el name="…" de cada campo, tal como sale en «Copiar HTML» del formulario.
+   3. video: el identificador del VSL en YouTube (lo que va después de v=), subido como oculto.
+   4. banner: déjalo vacío si la primera tanda no tiene tope de plazas. */
+window.AIOS = {
+  formUrl: '',
+  campos: { nombre: '', email: '', dedicacion: '' },
+  video: '',
+  banner: 'Lista de espera abierta · primera tanda con plazas limitadas',
+};
+</script>
+<style>
+:root{
+  --bg:#060B0B; --bg2:#0B1414; --band:#0E1A19; --line:rgba(125,240,196,.14);
+  --ink:#ECF7F3; --mute:#9DB3AD; --acc:#7DF0C4; --acc-ink:#04110D; --warm:#F5B45E;
+  --r:18px; --w:780px; --wide:1080px;
+  --h:'Barlow Condensed',system-ui,sans-serif; --b:'Barlow',system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:17px/1.6 var(--b);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+img,iframe{display:block;max-width:100%}
+
+/* Aurora: el mismo fondo vivo que la app */
+.aurora{position:fixed;inset:-20vmax;z-index:-1;pointer-events:none;filter:blur(70px);opacity:.55}
+.aurora i{position:absolute;border-radius:50%;animation:drift 26s ease-in-out infinite alternate}
+.aurora i:nth-child(1){width:46vmax;height:46vmax;left:8%;top:4%;background:radial-gradient(circle,#1f7a62 0,transparent 65%)}
+.aurora i:nth-child(2){width:38vmax;height:38vmax;right:6%;top:22%;background:radial-gradient(circle,#7a5420 0,transparent 65%);animation-duration:32s;animation-delay:-8s}
+.aurora i:nth-child(3){width:40vmax;height:40vmax;left:30%;bottom:-6%;background:radial-gradient(circle,#123f4a 0,transparent 65%);animation-duration:38s;animation-delay:-16s}
+@keyframes drift{to{transform:translate(6vmax,-4vmax) scale(1.12)}}
+
+/* Barra superior y botón fijo */
+.top{background:var(--acc);color:var(--acc-ink);text-align:center;font:600 14px/1.3 var(--b);padding:9px 16px}
+.top:empty{display:none}
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;justify-content:center;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(6,11,11,.92) 35%);transform:translateY(110%);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.sticky.on{transform:none}
+
+/* Bandas: lo que hace que la página se lea como diseñada */
+.band{padding:88px 16px;position:relative}
+.band.muted{background:rgba(14,26,25,.72)}
+.band.dark{background:rgba(3,7,7,.78)}
+.band.accent{background:var(--acc);color:var(--acc-ink)}
+.wrap{max-width:var(--w);margin:0 auto}
+.wrap.wide{max-width:var(--wide)}
+.center{text-align:center}
+.eyebrow{display:inline-block;font:600 13px/1 var(--b);letter-spacing:.08em;text-transform:uppercase;color:var(--acc);border:1px solid var(--line);background:rgba(125,240,196,.06);border-radius:99px;padding:9px 14px;margin-bottom:22px}
+h1,h2,h3{font-family:var(--h);font-weight:800;line-height:.98;letter-spacing:-.01em}
+h1{font-size:clamp(46px,8.4vw,86px)}
+h2{font-size:clamp(36px,5.6vw,58px);margin-bottom:18px}
+h3{font-size:26px;font-weight:700;line-height:1.1}
+.lead{font-size:clamp(18px,2.4vw,22px);color:var(--mute);max-width:620px;margin:22px auto 0}
+.band.accent .lead,.band.accent p{color:rgba(4,17,13,.78)}
+mark{background:none;color:var(--acc)}
+
+.btn{display:inline-flex;flex-direction:column;align-items:center;gap:2px;border:0;cursor:pointer;background:var(--acc);color:var(--acc-ink);font:800 21px/1.1 var(--h);letter-spacing:.02em;text-transform:uppercase;padding:18px 34px;border-radius:14px;text-decoration:none;box-shadow:0 0 0 1px rgba(125,240,196,.4),0 18px 50px -12px rgba(125,240,196,.55);transition:transform .2s,box-shadow .2s}
+.btn small{font:500 13px/1.2 var(--b);text-transform:none;letter-spacing:0;opacity:.75}
+.btn:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(125,240,196,.6),0 24px 60px -12px rgba(125,240,196,.7)}
+.btn:active{transform:translateY(0) scale(.98)}
+.band.accent .btn{background:var(--acc-ink);color:var(--acc);box-shadow:none}
+.cta-row{margin-top:34px}
+
+/* Héroe */
+.hero{padding-top:72px;padding-bottom:40px}
+.hero h1 span{display:block;color:var(--acc)}
+
+/* Vídeo */
+.video{position:relative;aspect-ratio:16/9;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:radial-gradient(120% 90% at 50% 0,#13302a 0,#071010 70%);box-shadow:0 40px 120px -40px rgba(125,240,196,.35)}
+.video iframe{width:100%;height:100%;border:0}
+.video .soon{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:14px;color:var(--mute);font-size:15px}
+.play{width:84px;height:84px;border-radius:50%;background:rgba(125,240,196,.12);border:1px solid rgba(125,240,196,.4);display:grid;place-items:center;animation:pulse 2.6s ease-in-out infinite}
+.play::after{content:"";border-left:24px solid var(--acc);border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:6px}
+@keyframes pulse{50%{box-shadow:0 0 0 18px rgba(125,240,196,0)}0%{box-shadow:0 0 0 0 rgba(125,240,196,.35)}}
+
+/* Lista de beneficios */
+.checks{list-style:none;padding:0;display:grid;gap:14px;margin-top:30px}
+.checks li{display:flex;gap:14px;align-items:flex-start;background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:14px;padding:16px 18px;font-size:18px}
+.checks li::before{content:"";flex:none;width:24px;height:24px;margin-top:2px;border-radius:50%;background:var(--acc) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%2304110D' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat}
+
+/* Historia */
+.story p{font-size:19px;margin-top:18px;color:#cfe0db}
+.story .by{margin-top:26px;font:600 15px var(--b);color:var(--acc)}
+
+/* Comparativa */
+.cmp{margin-top:34px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.cmp .row{display:grid;grid-template-columns:1fr 1fr}
+.cmp .row>div{padding:16px 20px;border-top:1px solid var(--line)}
+.cmp .head>div{border-top:0;font:700 15px var(--b);text-transform:uppercase;letter-spacing:.06em}
+.cmp .row>div:first-child{color:var(--mute)}
+.cmp .row>div:last-child{background:rgba(125,240,196,.06)}
+.cmp .head>div:last-child{color:var(--acc)}
+.cmp .row:not(.head)>div:first-child::before{content:"✕  ";color:#c07a6a}
+.cmp .row:not(.head)>div:last-child::before{content:"✓  ";color:var(--acc);font-weight:700}
+
+/* Cita */
+.quote{font:800 clamp(40px,7vw,76px)/1 var(--h);text-align:center;letter-spacing:-.01em}
+
+/* Pasos */
+.steps{list-style:none;padding:0;display:grid;gap:16px;margin-top:34px;counter-reset:s}
+.steps li{counter-increment:s;display:grid;grid-template-columns:64px 1fr;gap:18px;align-items:start;padding:20px;border:1px solid var(--line);border-radius:var(--r);background:rgba(255,255,255,.02)}
+.steps li::before{content:counter(s,decimal-leading-zero);font:800 44px/1 var(--h);color:var(--acc)}
+.steps p{color:var(--mute);margin-top:4px}
+
+/* Oferta y formulario */
+.offer{display:grid;gap:28px;grid-template-columns:1.05fr 1fr;align-items:start}
+.card{border:1px solid rgba(125,240,196,.3);border-radius:22px;background:linear-gradient(180deg,rgba(125,240,196,.07),rgba(125,240,196,.015));padding:30px}
+.card h3{margin-bottom:6px}
+.price{font:700 15px var(--b);color:var(--warm);margin-bottom:18px}
+.card .checks li{font-size:16px;padding:12px 14px}
+form{display:grid;gap:14px}
+label{display:grid;gap:6px;font:600 14px var(--b);color:var(--mute)}
+input,textarea{font:17px var(--b);color:var(--ink);background:rgba(0,0,0,.35);border:1px solid rgba(157,179,173,.28);border-radius:12px;padding:14px 16px;outline:none;transition:border-color .2s,box-shadow .2s}
+input:focus,textarea:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(125,240,196,.18)}
+textarea{min-height:84px;resize:vertical}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+form .btn{width:100%;margin-top:6px}
+.fine{font-size:13px;color:var(--mute);text-align:center}
+.msg{border-radius:12px;padding:14px 16px;font-size:15px}
+.msg.err{background:rgba(192,122,106,.14);border:1px solid rgba(192,122,106,.45)}
+.done{text-align:center;padding:26px 6px}
+.done h3{font-size:38px;color:var(--acc);margin-bottom:10px}
+
+/* Preguntas */
+details{border-top:1px solid var(--line);padding:20px 4px}
+details:last-child{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px;font:700 22px/1.2 var(--h)}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--acc);font-size:28px;line-height:.8;transition:transform .25s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--mute);margin-top:10px}
+
+footer{padding:40px 16px 120px;text-align:center;color:var(--mute);font-size:14px}
+
+/* Entrada al hacer scroll */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+
+@media (max-width:820px){
+  .band{padding:64px 16px}
+  .offer{grid-template-columns:1fr}
+  .cmp .row{grid-template-columns:1fr}
+  .cmp .head{display:none}
+  .cmp .row>div:first-child{border-top:1px solid var(--line)}
+  .cmp .row>div:last-child{border-top:0}
+  .steps li{grid-template-columns:48px 1fr;padding:16px}
+  .steps li::before{font-size:34px}
+  .btn{padding:16px 24px;font-size:19px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .rv{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="top" id="banner"></div>
+
+<header class="band hero center">
+  <div class="wrap">
+    <span class="eyebrow">Para marcas personales y negocios que publican vídeo</span>
+    <h1>Tu equipo de contenido, <span>en un agente que trabaja en tu ordenador</span></h1>
+    <p class="lead">De la idea al vídeo publicado y a la respuesta por privado. Tú solo apruebas.</p>
+  </div>
+</header>
+
+<section class="band" style="padding-top:8px">
+  <div class="wrap wide rv">
+    <div class="video" id="video">
+      <div class="soon"><div class="play"></div>Mira cómo funciona · vídeo en preparación</div>
+    </div>
+  </div>
+  <div class="wrap center cta-row">
+    <a class="btn" href="#apuntarme">Quiero entrar en la lista<small>Gratis · sin tarjeta</small></a>
+  </div>
+</section>
+
+<section class="band muted">
+  <div class="wrap rv">
+    <h2 class="center">Lo que hace por ti</h2>
+    <ul class="checks">
+      <li>Te propone ideas cada semana a partir de lo que mejor les funciona a quienes sigues</li>
+      <li>Escribe el guion escena a escena y monta el vídeo él solo</li>
+      <li>Publica en Instagram y contesta por privado a quien comenta tu palabra clave</li>
+      <li>Junta tus métricas de YouTube e Instagram y te dice qué gancho retuvo más</li>
+      <li>Se conecta a tus notas, así que no se inventa tu experiencia</li>
+      <li>Nada se publica sin tu visto bueno</li>
+    </ul>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap story rv">
+    <h2>Por qué lo construí</h2>
+    <p>Para publicar cada semana necesitaba a alguien que pensara ideas, alguien que editara, alguien que lo subiera, alguien que contestara los mensajes y alguien que mirara los números. Probé a hacerlo yo y no me daba la vida. Probé herramientas sueltas: una para guiones, otra para editar, otra para programar. Seguía siendo yo el que lo unía todo.</p>
+    <p>Así que monté otra cosa: un agente de IA con especialistas dentro (uno de guion, uno de dirección, uno de títulos, uno de publicación) que trabaja en mi ordenador, con mis cuentas y mis notas. Yo le doy la idea y apruebo. <mark>Él hace el resto.</mark></p>
+    <p>Este es el sistema con el que hago hoy mis vídeos. Y lo estoy preparando para que puedas instalártelo tú.</p>
+    <p class="by">— Álvaro</p>
+  </div>
+</section>
+
+<section class="band muted">
+  <div class="wrap rv">
+    <h2 class="center">Antes y ahora</h2>
+    <div class="cmp" role="table">
+      <div class="row head" role="row"><div role="columnheader">Sin AI OS</div><div role="columnheader">Con AI OS</div></div>
+      <div class="row" role="row"><div role="cell">Piensas ideas mirando el móvil</div><div role="cell">Cada semana te enseña lo que destaca en tu sector frente a la media de su autor</div></div>
+      <div class="row" role="row"><div role="cell">Un editor, o tus noches</div><div role="cell">El agente monta el vídeo y revisa sus propios fotogramas</div></div>
+      <div class="row" role="row"><div role="cell">Cinco herramientas sueltas</div><div role="cell">Un solo sitio, en tu ordenador</div></div>
+      <div class="row" role="row"><div role="cell">Contestas los DMs a mano</div><div role="cell">Quien comenta tu palabra clave recibe el recurso por privado</div></div>
+      <div class="row" role="row"><div role="cell">Publicas y no sabes por qué funcionó</div><div role="cell">Ves qué gancho retuvo más que tu media</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band accent">
+  <div class="wrap rv"><p class="quote">Yo apruebo.<br>Él hace el resto.</p></div>
+</section>
+
+<section class="band">
+  <div class="wrap rv">
+    <h2 class="center">Cómo funciona</h2>
+    <ol class="steps">
+      <li><div><h3>Le das una idea</h3><p>O eliges una de las que te propone esa semana.</p></div></li>
+      <li><div><h3>Te propone el guion</h3><p>Lo cambias diciéndoselo, como a una persona.</p></div></li>
+      <li><div><h3>Monta el vídeo</h3><p>Escenas, motion graphics, música y voz.</p></div></li>
+      <li><div><h3>Apruebas y publica</h3><p>Título con criterio SEO y respuesta automática por privado.</p></div></li>
+      <li><div><h3>Mira los resultados</h3><p>Y lo tiene en cuenta en el siguiente.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<section class="band dark" id="apuntarme">
+  <div class="wrap wide offer">
+    <div class="rv">
+      <span class="eyebrow">La primera tanda</span>
+      <h2>Tenlo en tu ordenador</h2>
+      <p class="price">Pago único, sin cuotas. El precio lo anuncio primero a la lista.</p>
+      <ul class="checks">
+        <li>AI OS instalado en tu ordenador, con tu suscripción de Claude o ChatGPT</li>
+        <li>Instalación guiada paso a paso</li>
+        <li>Conexión con tu YouTube, tu Instagram y tus notas</li>
+      </ul>
+    </div>
+    <div class="card rv" id="formCard">
+      <h3>Apúntate a la lista de espera</h3>
+      <p class="fine" style="text-align:left;margin-bottom:18px">Te escribo en cuanto abra la primera tanda.</p>
+      <form id="form" novalidate>
+        <label>Nombre<input name="nombre" autocomplete="name" required></label>
+        <label>Email<input name="email" type="email" autocomplete="email" required></label>
+        <label>¿A qué te dedicas? <span style="font-weight:400">(opcional)</span><textarea name="dedicacion" placeholder="Ej.: tengo una clínica y publico en Instagram"></textarea></label>
+        <div class="hp" aria-hidden="true"><label>Web<input name="ls_website" tabindex="-1" autocomplete="off"></label></div>
+        <div class="msg err" id="err" hidden></div>
+        <button class="btn" type="submit" id="send">Apuntarme<small>Gratis · sin tarjeta</small></button>
+        <p class="fine">Solo te escribiré sobre AI OS. Puedes darte de baja cuando quieras.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="band muted">
+  <div class="wrap rv">
+    <h2 class="center">Preguntas</h2>
+    <details><summary>¿Es una app en la nube?</summary><p>No. Se instala en tu ordenador y se conecta a tus cuentas.</p></details>
+    <details><summary>¿Qué necesito?</summary><p>Un ordenador con Windows, una suscripción de Claude o de ChatGPT y tus cuentas de YouTube e Instagram.</p></details>
+    <details><summary>¿Publica sin que yo lo vea?</summary><p>No. Tú apruebas cada vídeo y cada publicación.</p></details>
+    <details><summary>¿Tengo que saber programar?</summary><p>No. Le hablas como a una persona; la instalación te la explico paso a paso.</p></details>
+    <details><summary>¿Cuánto cuesta?</summary><p>Es un pago único. El precio lo anuncio primero a la lista de espera.</p></details>
+    <details><summary>¿Funciona con TikTok?</summary><p>Todavía no. Hoy publica en Instagram y prepara la subida a YouTube.</p></details>
+  </div>
+</section>
+
+<section class="band accent center">
+  <div class="wrap rv">
+    <h2>¿Lo quieres en tu ordenador?</h2>
+    <p class="lead">Apúntate y te escribo en cuanto abra la primera tanda.</p>
+    <div class="cta-row"><a class="btn" href="#apuntarme">Quiero entrar en la lista<small>Gratis · sin tarjeta</small></a></div>
+  </div>
+</section>
+
+<footer>AI OS · <span id="year"></span></footer>
+
+<div class="sticky" id="sticky"><a class="btn" href="#apuntarme">Quiero entrar en la lista<small>Gratis · sin tarjeta</small></a></div>
+
+<script>
+(() => {
+  const C = window.AIOS;
+  document.getElementById('year').textContent = new Date().getFullYear();
+  document.getElementById('banner').textContent = C.banner || '';
+
+  // Vídeo: solo YouTube, con el identificador limpio.
+  const vid = String(C.video || '').trim();
+  if (/^[\w-]{6,20}$/.test(vid)) {
+    const f = document.createElement('iframe');
+    f.src = `https://www.youtube-nocookie.com/embed/${vid}?rel=0&modestbranding=1`;
+    f.title = 'Cómo funciona AI OS';
+    f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+    f.allowFullscreen = true;
+    const box = document.getElementById('video'); box.replaceChildren(f);
+  }
+
+  // Entrada al hacer scroll.
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .12 });
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+  // Botón fijo: aparece tras el héroe y se esconde sobre el formulario.
+  const sticky = document.getElementById('sticky');
+  const hero = document.querySelector('.hero'), formSec = document.getElementById('apuntarme');
+  let pastHero = false, onForm = false;
+  const paint = () => sticky.classList.toggle('on', pastHero && !onForm);
+  new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting; paint(); }).observe(hero);
+  new IntersectionObserver(([e]) => { onForm = e.isIntersecting; paint(); }, { threshold: .2 }).observe(formSec);
+
+  // Formulario: envía directo al formulario de CoreCRM (mismo envío que su «Copiar HTML»).
+  const form = document.getElementById('form'), err = document.getElementById('err'), send = document.getElementById('send');
+  const shownAt = Date.now();
+  const q = new URLSearchParams(location.search);
+  const attribution = {
+    utmSource: q.get('utm_source'), utmMedium: q.get('utm_medium'), utmCampaign: q.get('utm_campaign'),
+    utmContent: q.get('utm_content'), utmTerm: q.get('utm_term'), fbclid: q.get('fbclid'), gclid: q.get('gclid'),
+    landingPage: location.href.split('#')[0], referrer: document.referrer || null,
+  };
+  const target = (() => {
+    try { const u = new URL(C.formUrl); const id = /\/f\/([\w-]+)/.exec(u.pathname)?.[1]; return id ? `${u.origin}/api/forms/${id}/submit` : null; } catch { return null; }
+  })();
+  const say = text => { err.textContent = text; err.hidden = !text; };
+
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault();
+    say('');
+    const d = new FormData(form);
+    const nombre = String(d.get('nombre') || '').trim(), email = String(d.get('email') || '').trim(), dedicacion = String(d.get('dedicacion') || '').trim();
+    if (!nombre) return say('Pon tu nombre.');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return say('Revisa el email.');
+    if (!target || !C.campos.nombre || !C.campos.email) return say('El formulario aún no está conectado. Vuelve en un rato.');
+    const values = { [C.campos.nombre]: nombre, [C.campos.email]: email };
+    if (C.campos.dedicacion && dedicacion) values[C.campos.dedicacion] = dedicacion;
+    send.disabled = true; send.style.opacity = .7;
+    try {
+      const r = await fetch(target, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ values, attribution, hp: String(d.get('ls_website') || ''), elapsedMs: Date.now() - shownAt }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || !j.ok) throw new Error(r.status === 429 ? 'Demasiados intentos seguidos. Prueba en unos minutos.' : 'No se ha podido enviar. Prueba otra vez en un momento.');
+      document.getElementById('formCard').innerHTML = '<div class="done"><h3>Estás dentro</h3><p>Te escribiré en cuanto abra la primera tanda.</p></div>';
+      if (j.redirectUrl) setTimeout(() => { location.href = j.redirectUrl; }, 2500);
+    } catch (e) {
+      say(e.message || 'No se ha podido enviar.');
+      send.disabled = false; send.style.opacity = '';
+    }
+  });
+})();
+</script>
+</body>
+</html>
